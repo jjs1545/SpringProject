@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+	PUBLIC ".//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 타입 별칭 --> <!-- 타입 별칭은 자바 타입에 대한 짧은 이름이다.마이바티스가 빈을 찾도록 패키지를 명시할 수 있다. -->
+	<typeAliases>
+		<typeAlias alias="guestbookvo" type="com.example.myportal.vo.GuestbookVo"/>
+		<typeAlias alias="uservo" type="com.example.myportal.vo.UserVo"/>
+		<typeAlias alias="boardvo" type="com.example.myportal.vo.BoardVo"/>
+	</typeAliases>
+
+
+	<!-- SQL Mapping 파일 목록 -->
+	<mappers>
+		<mapper resource="mybatis/mappers/guestbook.xml"/>
+		<mapper resource="mybatis/mappers/user.xml"/>
+		<mapper resource="mybatis/mappers/board.xml"/>
+	</mappers>
+</configuration>

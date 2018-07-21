@@ -1,0 +1,40 @@
+회원가입 테이블
+
+CREATE TABLE member (
+	no int PRIMARY KEY AUTO_INCREMENT,
+	id varchar(128) NOT NULL,
+	name varchar(20) NOT NULL,
+	password varchar(20) NOT NULL,
+	join_date datetime NOT NULL DEFAULT now()
+);
+
+
+방명록 테이블
+CREATE TABLE guestbook (
+	no int primary key auto_increment,
+	name varchar(20) NOT NULL,
+	password varchar(20) NOT NULL,
+	content varchar(255) NOT NULL,
+	regdate datetime NOT NULL DEFAULT now()
+);
+
+블로그 테이블
+CREATE TABLE BLOG (
+	no int primary key auto_increment NOT NULL,
+	USERS_NO int,
+	TITLE VARCHAR(100),
+	LOGO VARCHAR(255) DEFAULT 'name.jpg',
+	FOREIGN KEY(USERS_NO) REFERENCES member(no) 
+	on delete cascade
+);
+
+카테고리 테이블
+CREATE TABLE CATEGORY (
+	no int primary key auto_increment NOT NULL,
+	BLOG_NO int,
+	NAME VARCHAR(30),
+	DESCRIPTION VARCHAR(20),
+	REG_DATE datetime NOT NULL DEFAULT now()
+	FOREIGN KEY(BLOG_NO) REFERENCES BLOG(NO)
+	on delete cascade
+);

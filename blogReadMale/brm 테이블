@@ -47,9 +47,44 @@ CREATE TABLE POST (
 	no int primary key auto_increment NOT NULL,
 	CATEGORY_NO int,
 	TITLE VARCHAR(100),
-	CONTENT VARCHAR(999),
+	CONTENT VARCHAR(1500),
 	REG_DATE datetime NOT NULL DEFAULT now(),
 	FOREIGN KEY(CATEGORY_NO) REFERENCES CATEGORY(no)
 	on delete cascade
 );
 
+
+코멘트 테이블
+CREATE TABLE COMMENT(
+	no int primary key auto_increment NOT NULL,
+	POST_NO int,
+	name VARCHAR(30),
+	CONTENT VARCHAR(555),
+	REG_DATE datetime NOT NULL DEFAULT now(),
+	FOREIGN KEY(POST_NO) REFERENCES POST(no)
+	on delete cascade
+);
+
+
+select * 
+from category, post
+where category
+
+insert into comment (no, post_no, user_id, comment)
+values(301, 17, (select count(*) from users where id='powerku')+2, '댓글 test입니다');
+
+insert into category values(11, 1, "안녕", (select count(no) from post where category_no=1), "gd", now());
+
+
+select c.no as no, c.name as name, c.description as description, p.title as title, p.content as content, p.reg_date as reg_date
+from category c, post p
+where c.no=p.category_no AND blog_no=1; 
+
+3번 일때 --> 
+
+SELECT *
+			FROM post
+			WHERE no = 4
+
+
+			

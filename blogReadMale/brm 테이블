@@ -66,9 +66,9 @@ CREATE TABLE COMMENT(
 );
 
 
-select * 
-from category, post
-where category
+
+
+=======================================================
 
 insert into comment (no, post_no, user_id, comment)
 values(301, 17, (select count(*) from users where id='powerku')+2, '댓글 test입니다');
@@ -76,15 +76,104 @@ values(301, 17, (select count(*) from users where id='powerku')+2, '댓글 test�
 insert into category values(11, 1, "안녕", (select count(no) from post where category_no=1), "gd", now());
 
 
-select c.no as no, c.name as name, c.description as description, p.title as title, p.content as content, p.reg_date as reg_date
-from category c, post p
-where c.no=p.category_no AND blog_no=1; 
+사용자별 최신 카테고리의 최신 포스트
+SELECT *
+FROM category c, post p
+where c.no = p.category_no AND c.blog_no=3 AND category_no=2
+ORDER BY p.reg_date DESC
+limit 1;
 
-3번 일때 --> 
+SELECT p.title, p.content, p.category_no
+FROM category c, post p 
+where c.no = p.category_no AND c.blog_no=3
+ORDER BY p.reg_date DESC;
+
+
+사용자, 카테고리별 포스트 리스트
+select *
+from post
+where category_no=1
+order by reg_date desc;
 
 SELECT *
-			FROM post
-			WHERE no = 4
+FROM category c, post p
+where c.no = p.category_no AND c.blog_no=1 AND category_no=1
+ORDER BY p.reg_date DESC
+
+사용자, 카테고리별 최신 포스트
+select *
+from post
+where category_no = (select no
+					from category
+					where blog_no=3
+					order by reg_date desc
+					limit 1)
+order by reg_date desc
 
 
-			
+select no
+from category
+where blog_no=3
+order by reg_date desc
+limit 1;
+
+select *
+from category
+where blog_no=3
+order by reg_date desc;
+
+SELECT p.no as no, p.category_no as category_no ,p.title as title, p.content as content, p.reg_date as reg_date 
+FROM category c, post p
+where c.no = p.category_no AND c.blog_no=1 AND p.category_no=3
+ORDER BY p.reg_date DESC
+limit 1;
+
+select *
+from post
+where category_no=3
+ORDER BY reg_date desc;
+
+limit 1;
+
+			SELECT *
+			FROM category
+			WHERE BLOG_NO = 1
+			ORDER BY reg_date desc;
+
+
+모든 블로그 검색
+
+select m.id as id, m.name as name , b.title as title, b.logo as logo
+from member m, blog b 
+where m.no = b.users_no AND b.title like "%주신%"
+order by m.join_date desc;
+
+
+select m.name as name , b.title as title
+from member m, blog b 
+where m.no = b.users_no AND m.id like "%js%"
+order by m.join_date desc;
+
+
+
+b.title Like "%주신%";
+select * from blog where title like "%주신%";
+
+SELECT * FROM tablename WHERE who LIKE "%me"; 
+
+select m.id
+from member m, blog b, category c, post p
+where m.no=b.users_no AND b.users_no = c.blog_no AND c.no = p.category_NO
+order by p.reg_date;
+
+내일 할일
+
+1. 중복검사 안했을 시 -완료-
+2. 로그인 실패 시		-완료-
+4. 댓글 삭제			 -반완료-
+5. 미분류			-완료-
+6. 인터셉트 (basic,카테고리,write 페이지 등등)	 -완료-
+7. 페이징 
+8. 회원가입 성공 폼
+3. 검색
+(spring)벨리데이션

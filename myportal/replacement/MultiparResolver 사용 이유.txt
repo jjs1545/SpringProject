@@ -1,0 +1,13 @@
+[File]
+
+HTTP : 기본적으로 Text
+
+GET 방식: Query String으로 전송 - > 파일을 전송하긴 어렵다
+
+POST 방식: Request Header: REQUEST의 정보들 즉 브라우저 정보같은 것들로 이루어져있다.
+	   Request Body: 사실상 제약이 없다 (File은 binary형태이다. binary를 전송할 수 없으므로 encoding 시켜 binary를 text로 인코딩한다.)
+						-> *Base64(이름 알아두기)를 활용하여 binary를 text로 인코딩한다.
+
+파일 전송시 필요한 것: form태그에 method="post", enctype="multipart/form-data"
+
+-> but Spring 자체에는 multipart를 수행할 수 없다 -> dependency에서 multipart resolver를 통해 multipart를 수행한다

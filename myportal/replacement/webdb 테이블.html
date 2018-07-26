@@ -1,0 +1,29 @@
+Don`t
+Repeat
+Yourself
+
+create user webdb@localhost identified by 'webdb';
+grant all privileges on myportal.* to webdb@localhost;
+mysql -uwebdb -p
+
+CREATE TABLE guestbook (
+no int primary key auto_increment,
+name varchar(20) NOT NULL,
+password varchar(20) NOT NULL,
+content varchar(255) NOT NULL,
+regdate datetime NOT NULL DEFAULT now()
+);
+
+insert into guestbook (name, password, content)
+values("방문자", "test", "테스트 방명록입니다.");
+
+//멤버 회원가입 테이블
+
+CREATE TABLE member (
+no int PRIMARY KEY AUTO_INCREMENT,
+name varchar(20) NOT NULL,
+email varchar(128) NOT NULL,
+password varchar(20) NOT NULL,
+gender enum('MALE', 'FEMALE') NOT NULL DEFAULT 'MALE',
+join_date datetime NOT NULL DEFAULT now()
+);

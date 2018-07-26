@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	
+	<context:annotation-config/>
+	<context:component-scan base-package="com.example.myportal.exceptions,
+										com.example.myportal.repositories,
+										com.example.myportal.services">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		
+	</context:component-scan>
+	
+	<!-- MySQL DataSource -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/myportal?serverTimezone=UTC&amp;useSSL=false"/>
+		<property name="username" value="webdb"/>
+		<property name="password" value="webdb"/>
+		<!-- 커넥션 풀 에러  -->
+		<property name="validationQuery" value="select 1"/>
+	</bean>
+	
+	<!-- MyBatis sqlSessionFactory -->
+	<bean id="sqlSessionFacotry" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" /> <!-- dataSource와 연결 -->
+		<property name="configLocation" value="classpath:mybatis/configuration.xml"/>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFacotry"/>
+	</bean>
+</beans>

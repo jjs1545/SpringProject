@@ -1,0 +1,31 @@
+package com.example.blogReadMale.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.blogReadMale.vo.CommentVo;
+import com.example.blogReadMale.vo.PagingVo;
+import com.exmaple.blogReadMale.repositories.CommentDao;
+
+@Service
+public class CommentService {
+	@Autowired
+	private CommentDao commentDao;
+	
+	public List<CommentVo> list(int idx) {
+		return commentDao.selectAll(idx);
+	}
+	
+	public boolean insert(CommentVo vo) {
+		int count = commentDao.insert(vo);
+		return count==1;
+	}
+	
+	public boolean delete(int idx) {
+		int count = commentDao.delete(idx);
+		return count==1;
+	}
+	
+}

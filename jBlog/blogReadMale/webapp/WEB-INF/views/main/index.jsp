@@ -1,0 +1,116 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <c:import url="/WEB-INF/views/includes/header.jsp" />
+  </head>
+
+  <body>
+	<c:import url="/WEB-INF/views/includes/navigation.jsp" />
+
+    <header>
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+          <!-- Slide One - Set the background image for this slide in the line below -->
+          <div class="carousel-item active" style="background-image: url('${pageContext.request.contextPath }/img/wallpaper01.jpg')">
+            <div class="carousel-caption d-none d-md-block">
+              <!-- <h3>First Slide</h3>
+              <p>This is a description for the first slide.</p> -->
+            </div>
+          </div>
+          <!-- Slide Two - Set the background image for this slide in the line below -->
+          <div class="carousel-item" style="background-image: url('${pageContext.request.contextPath }/img/wallpaper10.jpg')">
+            <div class="carousel-caption d-none d-md-block">
+              <!-- <h3>Second Slide</h3>
+              <p>This is a description for the second slide.</p> -->
+            </div>
+          </div>
+          <!-- Slide Three - Set the background image for this slide in the line below -->
+          <div class="carousel-item" style="background-image: url('${pageContext.request.contextPath }/img/wallpaper03.jpg')">
+            <div class="carousel-caption d-none d-md-block">
+              <!-- <h3>Third Slide</h3>
+              <p>This is a description for the third slide.</p> -->
+            </div>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <h1 class="my-4">Welcome to JS Blog</h1>
+
+      <hr>
+
+      <!-- Call to Action Section -->
+      <form name="searchForm" method="post" action="${pageContext.request.contextPath}/search" onsubmit="return doCheck()">
+	      <div class="row mb-4">
+	        <div class="col-md-2">
+	          <P>&nbsp;</P>
+	          <select name="select" class="form-control" style="float:left">
+	          	<option value="title">블로그 제목</option>
+	          	<option value="bloger">블로거</option>
+	          </select>
+	        </div>
+	        <div class="col-md-6">
+	          <p><strong>다양한 블로그를 만나 보세요.</strong></p>
+	          <input type="text" class="form-control" style="float:left" name="search" value="검색">
+	        </div>
+	        <div class="col-md-4">
+	          <p> &nbsp; </p>
+	          <button type="submit" class="btn btn-lg btn-secondary btn-block" >검색</button>
+	        </div>
+	      </div>
+      </form>
+
+    </div>
+    <!-- /.container -->
+
+	<!-- footer -->
+	<c:import url="/WEB-INF/views/includes/footer.jsp"/>
+    <!-- Bootstrap core JavaScript -->
+    <script src="${pageContext.request.contextPath }/vendor/jquery/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath }/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+<script>
+	function isNull(obj, msg) {
+		if(obj.value == "") {
+			alert(msg);
+			obj.focus();
+			return true;
+		}
+		return false;
+	}
+	function doCheck() {
+		var sForm = document.searchForm;
+		
+		if(isNull(sForm.search, '검색어를 입력해 주세요!')) {
+			return false;
+		}
+	}
+</script>
+</html>

@@ -1,0 +1,41 @@
+package com.exmaple.blogReadMale.repositories;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.example.blogReadMale.vo.PostVo;
+
+@Repository
+public class PostDao {
+	@Autowired
+	private SqlSession sqlSession;
+	
+	public int insert(PostVo vo) {
+		int count = sqlSession.insert("post.postInsert",vo);
+		return count;
+	}
+	
+	public List<PostVo> getUserPost(int idx) {
+		List<PostVo> list = sqlSession.selectList("post.getUserPost",idx);
+		return list;
+	}
+	
+	public PostVo getPost(int idx) {
+		PostVo postvo = sqlSession.selectOne("post.getPost",idx);
+		return postvo;
+	}
+	
+	public int getTotalPost() {
+		int totalPost = sqlSession.selectOne("post.getTotalPost");
+		return totalPost;
+	}
+	
+	/*카테고리별 가장 최신의 포스트를 가져오기 위한 service*/
+	public PostVo getlastPost(int idx) {
+		PostVo maxPost = sqlSession.selectOne("post.getMaxNoPost", idx);
+		return maxPost;
+	}
+}

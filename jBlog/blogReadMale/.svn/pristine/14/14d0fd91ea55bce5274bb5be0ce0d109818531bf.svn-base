@@ -1,0 +1,51 @@
+/**
+ * 포스트 컨트롤러 서비스
+ * 
+ * 
+ * */
+package com.example.blogReadMale.services;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.blogReadMale.vo.PostVo;
+import com.exmaple.blogReadMale.repositories.PostDao;
+
+@Service
+public class PostService {
+	@Autowired
+	private PostDao postDao;
+	
+	public boolean insert(PostVo vo) {
+		int count = postDao.insert(vo); 
+		return count==1;
+	}
+	
+	/*포스트 클릭시 포스트 가져오기*/
+	public PostVo selectPost(int idx) {
+		return postDao.selectPost(idx);
+	}
+	
+	/*category 별 해당 최신 포스트 가져오기*/
+	public PostVo getPost(int idx) {
+		return postDao.getPost(idx);
+	}
+	
+	/*블로거의 카테고리별 포스트 리스트 service*/
+	public List<PostVo> getPostList(int idx) {
+		return postDao.getPostList(idx);
+	}
+	
+	/*카테고리별 가장 최신의 포스트를 가져오기 위한 service*/
+	public PostVo getlastPost(int idx) {
+		return postDao.getlastPost(idx);
+	}
+
+	/*블로거의 카테고리별 포스트를 가져오기 위한 service*/
+	public List<PostVo> getUserPost(int idx) {
+		return postDao.getUserPost(idx);
+	}
+}

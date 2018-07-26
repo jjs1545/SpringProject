@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC ".//mybatis.org//DTD Mapper 1.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="post">
+	<insert id="postInsert" parameterType="postvo">
+		<![CDATA[
+			INSERT INTO post
+			VALUES (#{no},#{category_no},#{title},#{content},now())
+		]]>
+	</insert>
+	
+	<!-- 포스트 선택 시 포스트 가져오기 -->
+	<select id="selectPost" parameterType="int" resultType="postvo">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE no = #{idx}
+		]]>
+	</select>
+	
+	
+	<!-- category 별 해당 최신 포스트 가져오기 -->
+	<select id="getPost" parameterType="int" resultType="postvo">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE category_no = #{idx}
+			ORDER BY reg_date desc
+			limit 1;
+		]]>
+	</select>
+	
+	<!-- category 별 해당 포스트 리스트 가져오기 -->
+	<select id="getPostList" parameterType="int" resultType="postvo">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE category_no = #{idx}
+			ORDER BY reg_date desc
+		]]>
+	</select>
+	
+	<!-- 사용자, 카테고리별 포스트  리스트-->
+	<select id="getUserPost" parameterType="int" resultType="postvo">
+		<![CDATA[
+			select *
+			from post
+			where category_no = (select no
+								from category
+								where blog_no=#{idx}
+								order by reg_date desc
+								limit 1)
+			order by reg_date desc
+		]]>
+	</select>
+	
+	
+	<!-- 카테고리 별 가장 최근 업데이트 된 포스트 -->
+	<select id="getlastPost" resultType="postvo">
+		<![CDATA[
+			select *
+			from post
+			where category_no = (select no
+								 from category
+								 where blog_no=#{idx}
+								 order by reg_date desc
+								 limit 1)
+		    order by reg_date desc
+			limit 1;
+		]]>
+	</select>
+</mapper>

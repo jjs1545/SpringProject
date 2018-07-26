@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC ".//mybatis.org//DTD Mapper 1.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blog">
+	<!-- blog join member 유저정보 및 블로그 정보 출력-->
+	<select id="getBlogInfo" parameterType="int" resultType="blogvo">
+		<![CDATA[
+			SELECT *
+			FROM blog
+			WHERE USERS_NO=#{idx}
+		]]>
+	</select>
+	
+	<!-- blog table update -->
+	<update id="update" parameterType="userVo" >
+		<![CDATA[
+			UPDATE blog
+			SET TITLE=#{title}, LOGO=#{logo}
+			WHERE USERS_NO = #{USERS_NO}
+		]]>
+	</update>
+	
+	<!-- 블로그 제목으로 블로그 검색 -->
+	<select id="getBlogList" parameterType="String" resultType="blogvo">
+		<![CDATA[
+			select m.name as name, m.id as id , b.title as title, b.logo as logo
+			from member m, blog b 
+			where m.no = b.users_no AND b.title like CONCAT('%',#{str},'%')
+			order by m.join_date desc;
+		]]>
+	</select>
+</mapper>

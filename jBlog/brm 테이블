@@ -1,0 +1,249 @@
+데이터베이스 version MySql 8.0.11
+데이터베이스 명: brm
+
+회원가입 테이블
+
+CREATE TABLE member (
+	no int PRIMARY KEY AUTO_INCREMENT,
+	id varchar(128) NOT NULL,
+	name varchar(20) NOT NULL,
+	password varchar(20) NOT NULL,
+	join_date datetime NOT NULL DEFAULT now()
+);
+
+
+
+블로그 테이블
+CREATE TABLE BLOG (
+	no int primary key auto_increment NOT NULL,
+	USERS_NO int,
+	TITLE VARCHAR(100),
+	LOGO VARCHAR(255) DEFAULT 'name.jpg',
+	FOREIGN KEY(USERS_NO) REFERENCES member(no) 
+	on delete cascade
+);
+
+카테고리 테이블
+CREATE TABLE CATEGORY (
+	no int primary key auto_increment NOT NULL,
+	BLOG_NO int,
+	NAME VARCHAR(30),
+	POST_COUNT int DEFAULT 0,
+	DESCRIPTION VARCHAR(20),
+	REG_DATE datetime NOT NULL DEFAULT now(),
+	FOREIGN KEY(BLOG_NO) REFERENCES BLOG(NO)
+	on delete cascade
+);
+
+포스트 테이블
+CREATE TABLE POST (
+	no int primary key auto_increment NOT NULL,
+	CATEGORY_NO int,
+	TITLE VARCHAR(100),
+	CONTENT VARCHAR(1500),
+	REG_DATE datetime NOT NULL DEFAULT now(),
+	FOREIGN KEY(CATEGORY_NO) REFERENCES CATEGORY(no)
+	on delete cascade
+);
+
+
+코멘트 테이블
+CREATE TABLE COMMENT(
+	no int primary key auto_increment NOT NULL,
+	POST_NO int,
+	name VARCHAR(30),
+	CONTENT VARCHAR(555),
+	REG_DATE datetime NOT NULL DEFAULT now(),
+	FOREIGN KEY(POST_NO) REFERENCES POST(no)
+	on delete cascade
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=======================================================
+
+insert into comment (no, post_no, user_id, comment)
+values(301, 17, (select count(*) from users where id='powerku')+2, '댓글 test입니다');
+
+insert into category values(11, 1, "안녕", (select count(no) from post where category_no=1), "gd", now());
+
+
+사용자별 최신 카테고리의 최신 포스트
+SELECT *
+FROM category c, post p
+where c.no = p.category_no AND c.blog_no=3 AND category_no=2
+ORDER BY p.reg_date DESC
+limit 1;
+
+SELECT p.title, p.content, p.category_no
+FROM category c, post p 
+where c.no = p.category_no AND c.blog_no=1
+ORDER BY p.reg_date DESC;
+
+
+사용자, 카테고리별 포스트 리스트
+select *
+from post
+where category_no=1
+order by reg_date desc;
+
+SELECT *
+FROM category c, post p
+where c.no = p.category_no AND c.blog_no=1 AND category_no=1
+ORDER BY p.reg_date DESC
+
+사용자, 카테고리별 최신 포스트
+select *
+from post
+where category_no = (select no
+					from category
+					where blog_no=3
+					order by reg_date desc
+					limit 1)
+order by reg_date desc
+
+
+select no
+from category
+where blog_no=3
+order by reg_date desc
+limit 1;
+
+select *
+from category
+where blog_no=3
+order by reg_date desc;
+
+SELECT p.no as no, p.category_no as category_no ,p.title as title, p.content as content, p.reg_date as reg_date 
+FROM category c, post p
+where c.no = p.category_no AND c.blog_no=1 AND p.category_no=3
+ORDER BY p.reg_date DESC
+limit 1;
+
+select *
+from post
+where category_no=3
+ORDER BY reg_date desc
+limit 1;
+
+			SELECT *
+			FROM category
+			WHERE BLOG_NO = 1
+			ORDER BY reg_date desc;
+
+
+모든 블로그 검색
+
+select m.id as id, m.name as name , b.title as title, b.logo as logo
+from member m, blog b 
+where m.no = b.users_no AND b.title like "%주신%"
+order by m.join_date desc;
+
+
+select m.name as name , b.title as title
+from member m, blog b 
+where m.no = b.users_no AND m.id like "%js%"
+order by m.join_date desc;
+
+
+
+b.title Like "%주신%";
+select * from blog where title like "%주신%";
+
+SELECT * FROM tablename WHERE who LIKE "%me"; 
+
+select m.id
+from member m, blog b, category c, post p
+where m.no=b.users_no AND b.users_no = c.blog_no AND c.no = p.category_NO
+order by p.reg_date;
+
+내일 할일
+
+1. 중복검사 안했을 시 -완료-
+2. 로그인 실패 시		-완료-
+4. 댓글 삭제			 -반완료-
+5. 미분류			-완료-
+6. 인터셉트 (basic,카테고리,write 페이지 등등)	 -완료-
+7. 페이징 
+8. 회원가입 성공 폼
+3. 검색
+(spring)벨리데이션
+
+select p.title as title, p.content as content, p.reg_date as regdate
+from post p, category c
+where p.category_no = c.no AND c.blog_no=1
+order by p.reg_date desc;
+
+
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+insert into board values(no, "hi", "hi yo", now(), 11);
+
+
+
+select p.title as title, p.content as content, p.reg_date as reg_date
+from post p, category c
+where p.category_no = c.no AND c.blog_no=1
+order by p.reg_date desc
+LIMIT 1, 10;
+
+SELECT tot, tot div #{logsPerPage} as maxPage, tot mod #{logsPerPage} as remains
+FROM (SELECT count(*) tot FROM post where blog_no=#{idx}) t;
+
+SELECT count(*) tot FROM post p,category c where p.category_no=c.no AND blog_no=1
+
+
+
+SELECT tot, tot div #{logsPerPage} as maxPage, tot mod #{logsPerPage} as remains
+FROM (SELECT count(*) tot FROM post where category_no=#{idx}) t;
+
+select count(*)
+From post p, category c
+where p.category_no = c.no AND c.no=4
+order by p.reg_date DESC;
+
+
+select *
+from post
+where category_no = (select no
+					 from category
+					 where blog_no=1
+					 order by reg_date desc
+					 limit 1)
+order by reg_date desc
+limit 1;
+
+
+select title
+from post p, category c
+where c.no=p.category_no
+order by p.reg_date desc
+limit 1;

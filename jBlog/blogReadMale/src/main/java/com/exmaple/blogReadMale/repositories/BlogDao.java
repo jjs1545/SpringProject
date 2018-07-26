@@ -1,0 +1,62 @@
+/**
+ * 블로그 DAO
+ * 
+ * */
+package com.exmaple.blogReadMale.repositories;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.example.blogReadMale.vo.BlogVo;
+import com.example.blogReadMale.vo.UserVo;
+
+
+@Repository
+public class BlogDao {
+	@Autowired
+	private SqlSession sqlSession;
+	
+	public int insert(BlogVo vo) {
+		int count = sqlSession.insert("user.blogInsert",vo);
+		return count;
+	}
+	
+	public HashMap<String, String> selectById(String id) {
+		return sqlSession.selectOne("blog.selectUserById", id);
+	}
+	
+	// 특정 사용자의 정보 가져오기
+	public BlogVo getBlogInfo(int idx) {
+		BlogVo blogvo = sqlSession.selectOne("blog.getBlogInfo",idx);
+		return blogvo;
+	}
+	
+	//블로그 정보 수정
+	public int update(BlogVo vo) {
+		int count = sqlSession.update("blog.update",vo);
+		return count;
+	}
+	
+	/* 블로그 제목 검색 결과 */
+	public List<BlogVo> getSearhResult(String str) {
+		List<BlogVo> list = sqlSession.selectList("blog.getBlogList",str);
+		return list;
+	}
+	
+	/* 블로거 검색 결과 */
+	public List<BlogVo> getSearhResult2(String str) {
+		List<BlogVo> list = sqlSession.selectList("blog.getBlogList2",str);
+		return list;
+	}
+	
+	/* 모든 블로그 리스트 */
+	public List<BlogVo> getAllBlogList() {
+		List<BlogVo> list = sqlSession.selectList("blog.getAllBlogList");
+		return list;
+	}
+}

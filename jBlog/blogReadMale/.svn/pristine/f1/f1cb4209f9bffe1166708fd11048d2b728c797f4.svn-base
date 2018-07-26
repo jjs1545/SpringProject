@@ -1,0 +1,316 @@
+/**
+ * 블로그 컨트롤러
+ * 
+ * */
+package com.example.blogReadMale.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.blogReadMale.services.BlogService;
+import com.example.blogReadMale.services.CategoryService;
+import com.example.blogReadMale.services.FileUploadService;
+import com.example.blogReadMale.services.PostService;
+import com.example.blogReadMale.services.UserService;
+import com.example.blogReadMale.vo.BlogVo;
+import com.example.blogReadMale.vo.CategoryVo;
+import com.example.blogReadMale.vo.PostVo;
+import com.example.blogReadMale.vo.UserVo;
+
+@Controller
+public class BlogController {
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private BlogService blogService;
+	@Autowired
+	private FileUploadService fileUploadService;
+	@Autowired
+	private CategoryService categoryService;
+	@Autowired
+	private PostService postService;
+	
+	
+	/** 
+	 * 블로그 메인
+	 * 
+	 * */
+	
+	@RequestMapping("/blog")
+	public String blog() {
+		return "blog/blogMain";
+	}
+
+	/** 
+	 * @PathVariable 활용 블로그 생성
+	 * 
+	 * */
+	@RequestMapping("/{id}")
+	public String blog(@PathVariable String id, Model model, HttpSession session, HttpServletRequest request) {
+		/*@RequestParam("cNo") int cNo*/
+		String returnUrl="";
+		boolean exists = false;
+		String str = "";					
+		String str2 = ""; String str3 =""; /*카테고리별 포스트 불러오기 위한 str 변수*/
+		
+		try {
+			//유저가 가입되어 있는지 없는지 여부 판단.
+			exists = userService.getUserById(id);
+			
+			//해당 유저의 id를 활용해 blog정보를 List로 가져온다
+			UserVo uvo = userService.getUserInfo(id);
+			model.addAttribute("uvo",uvo);			  //블로그 id 전송
+			
+			int idx = (int)(long)uvo.getNo();         // 사용자 no
+			
+			BlogVo bvo = blogService.getBlogInfo(idx);
+			model.addAttribute("vo",bvo);
+			
+			//특정 유저의 카테고리 리스트
+			List<CategoryVo> categoryList = categoryService.getList(idx); //id 통해 memeber의 no를 가져와 해당 유저의 카테고리를 출력한다.
+			model.addAttribute("categoryList",categoryList);
+			
+			/*CategoryVo cvo = categoryService.getCategoryNo(idx);// memeber.no=blog_no을 활용해 카테고리 no를 가져온다
+			System.out.println("categoryNo:" + cvo.getNo());
+			int cno = (int)(long)cvo.getNo();*/
+			
+			/*카테고리 넘버를 활용하여 각 카테고리마다의 포스트를 가져온다.*/
+			str=request.getParameter("cNo");
+
+			/*카테고리별 포스트 글*/
+			str2=request.getParameter("pNo");
+			str3=request.getParameter("categoryNo");
+			
+			/*카테고리를 클릭 했을 시 포스트 목록과 최신 해당 카테고리의 포스트 값*/ 
+			if(str!=null) {
+				int cNo = Integer.parseInt(str);
+				/*사용자별 카테고리*/
+				List<PostVo> userPostList = postService.getUserPost(cNo);
+				model.addAttribute("userPostList",userPostList);
+				
+				/*카테고리, 포스트 테이블 조인 시*/ 
+				/*List<CategoryVo> userPostList = categoryService.getList(idx);
+				model.addAttribute("userPostList",userPostList);*/
+				/*int maxNum = postService.getTotalPost(cNo);	
+				System.out.println("maxNum:"+maxNum);*/
+				PostVo getPost = postService.getlastPost(cNo);				
+				model.addAttribute("post",getPost);
+			}else {
+				
+				/*default 페이지일 때의 데이터*/
+				
+				// id no를 활용하여 해당 유저 블로그의 카테고리 총 갯수를 가져온다 
+				int maxCategoryNum = categoryService.getTotalCategory(idx);
+				
+				// 카테고리의 총 숫자를 구한 후 가장 마지막 카테고리의 최신 포스트를 출력한다. (desc)
+				PostVo getPost = postService.getlastPost(maxCategoryNum);		
+				model.addAttribute("post",getPost);
+				
+				// 카테고리의 최대 숫자를 활용하여 카테고리 리스트를 가져온다. (desc)
+				List<PostVo> userPostList = postService.getUserPost(maxCategoryNum);		
+				model.addAttribute("userPostList",userPostList);
+			}
+		
+			/*포스트 목록을 클릭 했을시 최신 포스트 글 값과 포스트 목록 가져오기*/
+			if(str2!=null&str3!=null) {
+				int pNo=Integer.parseInt(str2);	//포스트 no로 포스트를 가져온다
+				int cNo=Integer.parseInt(str3);
+				
+				PostVo getPost = postService.getPost(pNo);
+				model.addAttribute("post",getPost);
+				
+				List<PostVo> userPostList = postService.getUserPost(cNo);
+				model.addAttribute("userPostList",userPostList);
+			}	
+			
+			
+		}catch (Exception e){
+			e.printStackTrace();
+			//TODO 에러발생시 404 처리
+			return "errors/exception";
+		}
+		
+		
+		
+		if(exists==true) {
+			returnUrl= "blog/blogMain";
+		}
+			
+		return returnUrl;
+	}
+	
+	/*@RequestMapping("/{id}/action")
+	public String blogAction(@PathVariable String id, Model model, HttpSession session, HttpServletRequest request) {
+		String str = "";
+		str=request.getParameter("cNo");
+		if(str!=null) {
+			int cNo = Integer.parseInt(str);
+			List<PostVo> userPostList = postService.getUserPost(cNo);
+			model.addAttribute("userPostList",userPostList);
+		}
+		
+		return "redirect:/"+id;
+	}*/
+	
+	/**
+	 * 블로그 기본설정 페이지
+	 * 
+	 * */
+	
+	@RequestMapping("/{id}/admin/basic")
+	public String Myblog(@PathVariable String id, Model model, HttpSession session) {
+	
+		try {
+			UserVo uvo = (UserVo)session.getAttribute("authUser");		//세션값 가져오기
+			int idx = (int)(long)uvo.getNo();
+			BlogVo bvo = blogService.getBlogInfo(idx);		//회원가입 순서를 활용해서 유저를 구별한다.
+			model.addAttribute("id",id);
+			model.addAttribute("vo",bvo);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return "errors/exception";
+		}
+		return "blog/myBlogPage/basic";
+	}
+	
+	/**
+	 * 카테고리 별 포스트 글작성 폼
+	 * 
+	 * */
+	
+	@RequestMapping("/{id}/admin/writeForm")
+	public String MyblogWrite(@PathVariable String id, Model model, HttpSession session) {
+	
+		/*UserVo uvo = (UserVo)session.getAttribute("authUser");		//세션값 가져오기
+		int idx = (int)(long)uvo.getNo();
+		BlogVo bvo = blogService.getBlogInfo(idx);		//회원가입 순서를 활용해서 유저를 구별한다.
+		model.addAttribute("id",id);
+		model.addAttribute("vo",bvo);*/
+		
+		try {
+			List<CategoryVo> list = categoryService.getList();
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("list", list);
+			model.addAllAttributes(map);
+		}catch(Exception e){
+			e.printStackTrace();
+			return "errors/exception";
+		}
+		return "blog/myBlogPage/writeForm";
+	}
+	
+	/**
+	 * 카테고리 별 포스트 글작성 Action
+	 * 
+	 * */
+	
+	@RequestMapping("/post/write")
+	public String WriteAction(@ModelAttribute PostVo vo,@RequestParam("select") String category, Model model, HttpSession session) {
+		int idx=0;		// 포스트 수 증가를 위한 필드
+		System.out.println("idx1:"+idx);
+		
+		UserVo uvo = (UserVo)session.getAttribute("authUser");		//세션값 가져오기
+	    String id = (String)uvo.getId();
+		
+	   /* System.out.println("post insert");
+	    System.out.println("id:" + id);*/
+	    
+	    /*select Box 선택시 카테고리 이름 -> category*/
+	    CategoryVo cvo = categoryService.getCategoryNo(category); 
+	    System.out.println("cNo:" + cvo.getNo());
+	   
+	    long cNo = cvo.getNo();
+	    int categoryNo = (int)(long)cvo.getNo();		//외래키 지정을 위한 카테고리 넘버를 얻는다
+	    vo.setCategory_no(categoryNo);
+	  
+	    try {
+	    	boolean result = postService.insert(vo);
+	    }catch (Exception e){
+	    	e.printStackTrace();
+	    }finally {
+	    	idx = cvo.getPost_count();	//category의 post_count의 기본값을 가져와서 
+	    	System.out.println("getPost_count:"+cvo.getPost_count());
+	    	idx++; 						//증가 시킨 후
+	    	cvo.setPost_count(idx);     //Post삽입 시 카테고리의 포스트 수 증가
+	    	cvo.setNo(cNo);
+	    	//System.out.println("idx2:"+idx);
+	    	categoryService.update(cvo);
+	    }
+	    
+		/*List<CategoryVo> list = categoryService.getList();
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", list);
+		model.addAllAttributes(map);*/
+		
+	    
+	    
+		return "redirect:/"+id+"/admin/writeForm";
+	}
+	
+	
+	/** 
+	 * 블로그 정보 수정  Action
+	 * 
+	 * */
+	@RequestMapping(value="/blog/update", method=RequestMethod.POST)
+	public String blogUpdate(@ModelAttribute BlogVo vo, @RequestParam("file") MultipartFile file, Model model, HttpSession session) {
+		String logo = vo.getLogo();	// 이름만 저장시 파일을 다시 받기 위해 사용
+		System.out.println("logo:" + logo);
+		
+		try {
+				if(!file.isEmpty()) {
+					System.out.println("file:" + file);
+					// 파일 이름 변경 저장 수행
+					String saveFilename = fileUploadService.save(file);
+					
+					UserVo uvo = (UserVo)session.getAttribute("authUser");		//세션값 가져오기
+					
+					int idx = (int)(long)uvo.getNo();
+					vo.setUSERS_NO(idx);	  //users_no을 활용하여 자신의 블로그 테이블에 업데이트 수행
+					vo.setLogo(saveFilename); //변경된 사진 이름 저장
+					boolean result = blogService.update(vo);
+					
+					String urlImage = "images/" + saveFilename;
+					model.addAttribute("vo",vo);
+					model.addAttribute("urlImage", urlImage);
+					model.addAttribute("result", result);	// 업데이트가 성공되면 사진이 출력된다
+					
+					return "blog/myBlogPage/basic";
+				}else {
+					
+					System.out.println("file없음요");
+					UserVo uvo = (UserVo)session.getAttribute("authUser");		//세션값 가져오기
+					
+					int idx = (int)(long)uvo.getNo();
+					vo.setUSERS_NO(idx);	  //users_no을 활용하여 자신의 블로그 테이블에 업데이트 수행
+					vo.setLogo(logo);
+					
+					boolean result = blogService.update(vo);
+					model.addAttribute("vo",vo);
+					//model.addAttribute("result", result);	// 업데이트가 성공되면 사진이 출력된다
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				return "errors/exception";
+			}
+		
+			return "blog/myBlogPage/basic";
+	}
+}

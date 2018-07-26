@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC ".//mybatis.org//DTD Mapper 1.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="post">
+	<insert id="postInsert" parameterType="postvo">
+		<![CDATA[
+			INSERT INTO post
+			VALUES (#{no},#{category_no},#{title},#{content},now())
+		]]>
+	</insert>
+	
+	<!-- 포스트를 List로 가져오기 -->
+	<select id="getUserPost" parameterType="int" resultType="postvo">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE category_no=#{idx}
+			ORDER BY no desc
+		]]>
+	</select>
+	
+	<!-- no 별 해당 포스트 가져오기 -->
+	<select id="getPost" parameterType="int" resultType="postvo">
+		<![CDATA[
+			SELECT *
+			FROM post
+			WHERE no = #{idx}
+		]]>
+	</select>
+	
+	<!-- 포스트 총 개수 -->
+	<select id="getTotalPost" resultType="int">
+		<![CDATA[
+			SELECT count(no)
+			FROM post
+		]]>
+	</select>
+	
+	<!-- 카테고리 별 가장 최근 업데이트 된 포스트 -->
+	<select id="getMaxNoPost" resultType="postvo">
+		<![CDATA[
+			SELECT *
+			FROM post
+			where category_no = #{idx}
+			ORDER BY no DESC
+			limit 1
+		]]>
+	</select>
+</mapper>

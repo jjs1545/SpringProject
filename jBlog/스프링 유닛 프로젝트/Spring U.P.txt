@@ -1,0 +1,27 @@
+Spring Unit Project
+
+HTML
+CSS
+javaScript
+database
+Spring					-> 능력 최대한 발휘 
+
+bit.ly/lbt-spring
+
+
+전체공개/ 비밀글/ 등등
+
+회원가입 유효성 검사
+
+javascript 활용-> 
+
+Front 단에서 유효성 검사 후 Controller에서 유효성 검사
+
+
+카테고리 위치 조정
+
+스토리보드 
+
+페이징이 아니고 이전 다음
+
+27일 아침에 제출

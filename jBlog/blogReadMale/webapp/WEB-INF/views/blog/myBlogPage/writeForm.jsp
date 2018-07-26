@@ -1,0 +1,152 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+	<c:import url="/WEB-INF/views/includes/header.jsp" />
+  </head>
+  <body>
+	<c:import url="/WEB-INF/views/includes/navigation2.jsp"/>
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Page Heading/Breadcrumbs -->
+      <h1 class="mt-4 mb-3">
+        <small>포스트를 작성하세요!</small>
+      </h1>
+      <ol class="breadcrumb">
+	        	<li class="breadcrumb-item active"><a href="${pageContext.request.contextPath}/${authUser.id}/admin/basic" style="color:black">기본설정</a></li>
+		 		<li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/${authUser.id}/admin/category" style="color:black">카테고리</a></li>
+		        <li class="breadcrumb-item active"><a href="${pageContext.request.contextPath}/${authUser.id}/admin/writeForm" style="color:black">글작성</a></li>
+      </ol>
+       <%-- <c:choose>
+        	<c:when test="${empty authUser}">
+        		<a class="navbar-brand" href="${pageContext.request.contextPath }/main">JUSIN 블로그</a>
+			</c:when>
+			<c:otherwise>
+        		<a class="navbar-brand" href="${pageContext.request.contextPath }/main">${authUser.name }님 안녕하세요 !</a>
+			</c:otherwise>
+        </c:choose> --%>
+      <div class="row">
+        <div class="col-lg-8 mb-8">
+          <div class="card h-100 text-center">
+            <form name="writeForm" method="post" action="${pageContext.request.contextPath}/post/write" onsubmit="return doCheck()">
+            <div class="card-body">
+              <h4 class="card-title" style="float:left">제목:  </h4>
+              <input type="text" class="form-control" name="title" style="width:50%; float:left">
+              
+              <!-- 카테고리 리스트 가져오기 -->
+	          <select class="form-control" style="float:left; width:30%;" name="select">
+	              <c:forEach items="${list }" var="list" varStatus="status">
+		              	<option value="${list.no }">${list.name}</option>
+	              </c:forEach>
+	          </select>
+              <br/><br/><br/>
+              <h4 class="card-title" style="float:left">내용: </h4>
+              <textarea class="form-control" name="content" style="height:300px; float:left; resize:none;"></textarea>
+             <!--  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p> -->
+            </div>
+            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-default">포스트 하기</button>
+            </div>
+           </form>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card h-100 text-center">
+            <!-- <img class="card-img-top" src="http://placehold.it/750x450" alt=""> -->
+            <img class="card-img-top" src="${pageContext.request.contextPath }/img/blog3.png" alt="">
+            <p>&nbsp;</p>
+            <div class="card-body">
+              <h4 class="card-title">글 작성 하기</h4>
+              <h6 class="card-subtitle mb-2 text-muted">&nbsp;</h6>
+              <p>&nbsp;</p>
+              <p>&nbsp;</p>
+              <p class="card-text">카테고리 별 글작성 페이지 입니다.</p>
+              <p class="card-text">카테고리를 선택한 후 글을 포스트 하세요!</p>
+            </div>
+            <div class="card-footer">
+              <a href="#">blogReadMale</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.row -->
+
+      <!-- Our Customers -->
+      <h2>My Blog</h2>
+      <div class="row">
+        <div class="col-lg-2 col-sm-4 mb-4">
+          <img class="img-fluid" src="${pageContext.request.contextPath }/img/first.jpg" alt="">
+        </div>
+        <div class="col-lg-2 col-sm-4 mb-4">
+           <img class="img-fluid" src="${pageContext.request.contextPath }/img/earth.jpg" alt="">
+        </div>
+        <div class="col-lg-2 col-sm-4 mb-4">
+          <img class="img-fluid" src="${pageContext.request.contextPath }/img/wallpaper02.jpg" alt="">
+        </div>
+        <div class="col-lg-2 col-sm-4 mb-4">
+          <img class="img-fluid" src="${pageContext.request.contextPath }/img/third.jpg" alt="">
+        </div>
+        <div class="col-lg-2 col-sm-4 mb-4">
+          <img class="img-fluid" src="${pageContext.request.contextPath }/img/wallpaper01.jpg" alt="">
+        </div>
+        <div class="col-lg-2 col-sm-4 mb-4">
+          <img class="img-fluid" src="${pageContext.request.contextPath }/img/wallpaper03.jpg" alt="">
+        </div>
+      </div>
+      <!-- /.row -->
+
+    </div>
+      <!-- /.row -->
+
+    <!-- /.container -->
+
+    <!-- footer -->
+	<c:import url="/WEB-INF/views/includes/footer.jsp"/>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<script>
+	function isNull(obj, msg) {
+		if(obj.value == "") {
+			alert(msg);
+			obj.focus();
+			return true;
+		}
+		return false;
+	}
+	function doCheck() {
+		var wForm = document.writeForm;
+		
+		if(isNull(wForm.title, '제목을 작성해 주세요!')) {
+			return false;
+		}
+		if(wForm.select.value == '') {
+			alert('카테고리를 생성해 주세요!');
+			return false;
+		}
+		
+		/* textarea 유효성 검사 */
+		if(wForm.content.value.length == 0) {
+			alert('내용을 입력해 주세요!');
+			wForm.content.focus();
+			return false;
+		}
+	}
+</script>
+
+</html>

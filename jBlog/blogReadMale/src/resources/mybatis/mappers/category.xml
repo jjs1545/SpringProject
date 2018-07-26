@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC ".//mybatis.org//DTD Mapper 1.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+
+	<select id="selectAll" resultType="categoryvo">
+		<![CDATA[
+			SELECT *
+			FROM category
+			ORDER BY no desc		
+		]]>
+	</select>
+	
+	<!-- 각 유저의 카테고리를 가져온다 -->
+	<select id="getUserCategory" resultType="categoryvo">
+		<![CDATA[
+			SELECT *
+			FROM category
+			WHERE BLOG_NO = #{idx}
+			ORDER BY reg_date desc
+		]]>
+	</select>
+	
+	
+	<!-- category, post 테이블 조인  vo에 필드 추가-->
+	<!-- ************************ -->
+	
+	<!-- <select id="getUserCategory" parameterType="int" resultType="categoryvo">
+		<![CDATA[
+			select c.no AS no, c.blog_no As blog_no, p.title AS title
+			from category c, post p
+			where c.no=p.category_no AND blog_no=#{idx} ;
+		]]>
+	</select> -->
+	
+	<!-- ************************ -->
+	
+	<!-- String을 통한 카테고리 넘버 가져오기 -->
+	<select id="getcategoryno" parameterType="string" resultType="categoryvo">
+		<![CDATA[
+			SELECT *
+			FROM category
+			WHERE name=#{name}
+		]]>
+	</select>
+	
+	<!-- int를 활용한 카테고리 넘버 가져오기 -->
+	<select id="getcategorynoIdx" parameterType="int" resultType="categoryvo">
+		<![CDATA[
+			SELECT *
+			FROM category
+			WHERE blog_no=#{idx}
+		]]>
+	</select>
+	
+	<!-- insert into category values(10, 1, "안녕", (select count(no) from post where category_no="1"), "gd", now()); -->
+	
+	<insert id="insert" parameterType="categoryvo">
+		<![CDATA[
+			INSERT INTO category
+			VALUES (#{no}, #{blog_no}, #{name}, #{post_count}, #{description}, now())
+		]]>
+	</insert> 
+	
+	<!--  
+	서브쿼리로 insert 문이 가능하다.
+	<insert id="insert" parameterType="categoryvo">
+		<![CDATA[
+			INSERT INTO category
+			VALUES (#{no}, #{blog_no}, #{name}, #{select count(no) 
+													from post 
+												   where category_no=#{}}, 
+			#{description}, now())
+		]]>
+	</insert> -->
+	
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			DELETE
+			FROM category
+			WHERE no = #{idx}
+		]]>
+	</delete>
+	
+	<!-- category 별 post_count 가져오기 -->
+	<select id="getpost_count" parameterType="int" resultType="categoryvo">
+		<![CDATA[
+			SELECT count(*) as post_count
+			FROM post p, category c
+			WHERE p.category_no = c.no AND c.no=#{idx}
+			ORDER BY p.reg_date DESC;
+		]]>
+	</select>
+	
+	<!-- category post update -->
+	<update id="update" parameterType="categoryvo" >
+		<![CDATA[
+			UPDATE category
+			SET POST_COUNT=#{post_count}
+			WHERE no = #{no}
+		]]>
+	</update>
+	
+	<!-- 유저 id별 category 총 개수 -->
+	<select id="getTotalCategory" resultType="int">
+		<![CDATA[
+			SELECT count(no)
+			FROM category
+			where blog_no=#{idx}
+		]]>
+	</select>
+</mapper>

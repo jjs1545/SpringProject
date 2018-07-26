@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC ".//mybatis.org//DTD Mapper 1.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="comment">
+	<select id="selectAll" resultType="commentvo">
+		<![CDATA[
+			SELECT *
+			FROM comment
+			WHERE post_no = #{idx}
+			ORDER BY reg_date DESC
+		]]>
+	</select>
+	
+	<insert id="insert" parameterType="commentvo">
+		<![CDATA[
+			INSERT INTO comment VALUES (#{no}, #{post_no},#{name}, #{content}, now())
+		]]>
+	</insert>
+	
+	<insert id="delete" parameterType="int">
+		<![CDATA[
+			DELETE FROM comment
+			WHERE no = #{idx}
+		]]>
+	</insert>
+	
+</mapper>

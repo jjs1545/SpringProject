@@ -1,0 +1,11 @@
+﻿정주신
+
+svn -> https://192.168.1.28/svn/nProject
+
+id: ryu
+pw: 123
+
+데이터베이스
+-> MySQL
+
+데이터베이스 : brm
